@@ -1,4 +1,4 @@
-import { ApiError, STATUS_CODE } from "../utils";
+import { ApiError, ApiResponse, STATUS_CODE } from "../utils";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../models";
@@ -28,9 +28,8 @@ export const Authenticate = async (
     req.user = user;
     next();
   } catch (error) {
-    throw new ApiError(
-      STATUS_CODE.UNAUTHORIZED,
-      error?.message || "Invalid access token",
-    );
+    console.log(error.message)
+    throw new ApiError(401, error?.message || "Invalid access token")
+
   }
 };

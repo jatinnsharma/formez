@@ -19,6 +19,7 @@ const createProfile = asyncHandler(
         );
     } catch (error) {
       // Error response in case of failure
+      console.log('inside error controller ')
       return res
         .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
         .json(
@@ -47,6 +48,8 @@ const updateProfile = asyncHandler(
           ),
         );
     } catch (error) {
+      console.log('inside error controller ')
+
       // Error response in case of failure
       return res
         .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
@@ -59,5 +62,7 @@ const updateProfile = asyncHandler(
     }
   },
 );
+
+
 
 export { createProfile, updateProfile };
