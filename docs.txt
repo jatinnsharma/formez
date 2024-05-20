@@ -1,0 +1,14 @@
+Auth System. 
+============ 
+
+    User must be sign up / login with(Email/username and password) 
+    User must be change password 
+    User must be forgot password 
+
+
+
+User Management System
+=========================
+
+    User must be able create profile 
+    User must be able to update profile
