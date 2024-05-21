@@ -1,6 +1,6 @@
 // src/models/User.ts
 import mongoose, { Document, Schema } from "mongoose";
-import { Gender } from "../utils/constants.util";
+import { Gender } from "../../utils/constants.util";
 
 export interface IUserDetail extends Document {
   username?: string;

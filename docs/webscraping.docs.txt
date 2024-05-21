@@ -1,0 +1,10 @@
+Scalable and efficient way to handle the web scraping
+
+1. Install Required Packages
+    npm install axios cheerio bottleneck amqplib
+
+2. Fetch Updates with Rate Limiting
+3. Queue Notifications Using RabbitMQ
+4. Process Notifications
+5. Schedule and Execute
+   Schedule the scraping job to run periodically (e.g., using node-cron)

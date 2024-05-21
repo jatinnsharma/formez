@@ -28,8 +28,7 @@ export const Authenticate = async (
     req.user = user;
     next();
   } catch (error) {
-    console.log(error.message)
-    throw new ApiError(401, error?.message || "Invalid access token")
-
+    console.log(error.message);
+    throw new ApiError(401, error?.message || "Invalid access token");
   }
 };

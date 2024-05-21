@@ -18,11 +18,16 @@
   "author": "Jatinnsharma",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.10.4",
+    "axios": "^1.7.1",
     "bcrypt": "^5.1.1",
+    "bottleneck": "^2.19.5",
+    "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.5",
+    "node-cron": "^3.0.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {

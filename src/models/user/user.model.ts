@@ -1,6 +1,6 @@
 // src/models/User.ts
 import mongoose, { Document, Schema } from "mongoose";
-import { UserRole } from "../utils/constants.util";
+import { UserRole } from "../../utils/constants.util";
 
 export interface IUser extends Document {
   identifier: string;
@@ -10,6 +10,8 @@ export interface IUser extends Document {
   salt: string;
   role: string;
   isVerified: boolean;
+  isDeleted?: boolean;
+  isBlocked?: boolean;
 }
 
 export type IUserOmit = Omit<IUser, "countryCode" | "phoneNumber">;

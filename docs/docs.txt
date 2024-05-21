@@ -12,4 +12,9 @@ User Management System
 
     User must be able create profile 
     User must be able to update profile
+    User must be able to change the username,
+    User can join,create,community
+    User can rating,review to school , college , university, resourses and exams  
+    
+
     

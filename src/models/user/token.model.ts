@@ -6,6 +6,7 @@ export interface IToken extends Document {
   accessToken: string;
   refreshToken: string;
   otp: string;
+  fcmToken: string;
 }
 
 const tokenSchema: Schema = new Schema(
