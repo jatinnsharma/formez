@@ -1,6 +1,13 @@
 import { Request, Response } from "express";
 import { authServices } from "../services";
-import { ApiResponse, STATUS_CODE, asyncHandler } from "../utils";
+import {
+  STATUS_CODE,
+  ValidatePassword,
+  asyncHandler,
+  sendErrorResponse,
+  sendSuccessResponse,
+} from "../utils";
+import { User } from "../models";
 
 /**
  * Controller function to handle auth system.
@@ -16,30 +23,18 @@ import { ApiResponse, STATUS_CODE, asyncHandler } from "../utils";
 const register = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     try {
-      const createdUser = await authServices.register(req.body);
+      const { identifier, password } = req.body;
 
-      // Success response with created user data
-      return res
-        .status(STATUS_CODE.CREATED)
-        .json(
-          new ApiResponse(
-            STATUS_CODE.CREATED,
-            "User registered Successfully",
-            createdUser,
-          ),
-        );
+      const createdUser = await authServices.register({ identifier, password });
+
+      sendSuccessResponse(
+        res,
+        STATUS_CODE.CREATED,
+        "User registered successfully",
+        createdUser,
+      );
     } catch (error) {
-      console.log(error);
-      // Error response in case of failure
-      return res
-        .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-        .json(
-          new ApiResponse(
-            STATUS_CODE.INTERNAL_SERVER_ERROR,
-            error.message || "Internal server error",
-            null,
-          ),
-        );
+      sendErrorResponse(res, error);
     }
   },
 );
@@ -57,24 +52,17 @@ const register = asyncHandler(
 const login = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     try {
-      const loginUser = await authServices.login(req.body);
+      const { identifier, password } = req.body;
+      const loginUser = await authServices.login({identifier, password} );
 
-      // Success response with token
-      return res
-        .status(STATUS_CODE.OK)
-        .json(
-          new ApiResponse(STATUS_CODE.OK, "User login Successfully", loginUser),
-        );
+      sendSuccessResponse(
+        res,
+        STATUS_CODE.OK,
+        "User login successfully",
+        loginUser,
+      );
     } catch (error) {
-      // Error response in case of failure
-      return res
-        .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-        .json(
-          new ApiResponse(
-            STATUS_CODE.INTERNAL_SERVER_ERROR,
-            error.message || "Internal server error",
-          ),
-        );
+      sendErrorResponse(res, error);
     }
   },
 );
@@ -87,22 +75,22 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     await authServices.refreshAccessToken(incomingRefreshToken);
 
   try {
-    return res
+    res
       .status(STATUS_CODE.OK)
       .cookie("accessToken", accessToken, options)
-      .cookie("refreshToken", refreshToken, options)
-      .json(
-        new ApiResponse(STATUS_CODE.OK, "Access token refreshed", {
-          accessToken,
-          refreshToken,
-        }),
-      );
+      .cookie("refreshToken", refreshToken, options);
+    sendSuccessResponse(res, STATUS_CODE.OK, "Access token refreshed", {
+      accessToken,
+      refreshToken,
+    });
   } catch (error) {
-    throw new ApiResponse(
-      STATUS_CODE.UNAUTHORIZED,
-      error?.message || "Invalid refresh token",
-    );
+    sendErrorResponse(res, error);
   }
 });
 
-export { register, login, refreshAccessToken };
+const changePassword = asyncHandler(async (req, res) => {
+  const userId = req?.user?._id;
+  const response = await authServices.changePassword(userId, req.body);
+});
+
+export { register, login, refreshAccessToken, changePassword };

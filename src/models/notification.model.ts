@@ -12,33 +12,27 @@ export interface INofication extends Document {
 
 const CommunitySchema: Schema = new Schema(
   {
-    userId: {
+    tttle: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
     },
-    name: {
+    message: {
       type: String,
     },
-    description: {
+    type: {
       type: String,
+      // enums
     },
-    members: {
+    status: {
+      type: String, // enums
+    },
+    users: {
       type: [Schema.Types.ObjectId],
       ref: "User",
       default: [],
     },
-    profilePicture: {
-      type: String,
-    },
-    banner: {
-      type: String,
-    },
-    rules: {
-      type: [String],
-      default: [],
-    },
-    topics: {
+    attachment_url: {
       type: [String],
       default: [],
     },

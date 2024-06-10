@@ -1,0 +1,17 @@
+[{
+  "_id": {
+    "$oid": "6645e75cb53b4c13144f7543"
+  },
+  "email": "admin@formez.com",
+  "password": "$2b$10$N//Z1fjYkQ/Bq749gv2N4OYs5.jVmG6yvRvh/7NXIej4juIX7SSbi",
+  "salt": "$2b$10$N//Z1fjYkQ/Bq749gv2N4O",
+  "role": "Admin",
+  "isVerified": true,
+  "createdAt": {
+    "$date": "2024-05-16T11:00:44.563Z"
+  },
+  "updatedAt": {
+    "$date": "2024-05-16T11:00:44.563Z"
+  },
+  "__v": 0
+}]

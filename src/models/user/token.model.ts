@@ -19,6 +19,7 @@ const tokenSchema: Schema = new Schema(
     accessToken: { type: String },
     refreshToken: { type: String },
     otp: { type: String },
+    fcmToken: { type: String },
   },
   {
     toJSON: {

@@ -37,7 +37,15 @@ export const passwordValidation = z
   .string()
   .min(6, { message: "Password must be at aleast 6 characters" })
   .max(20, { message: "Password must be no more than 20 characters" })
+  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+  .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+  .regex(/[0-9]/, "Password must contain at least one digit")
   .regex(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-    "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character",
+    /[^A-Za-z0-9]/,
+    "Password must contain at least one special character",
   );
+
+export const phoneNumberValidation = z
+  .number()
+  .min(10, { message: "Phone number must be atleast 10 number" })
+  .max(10, { message: "Phone number must be atleast 12 number" });

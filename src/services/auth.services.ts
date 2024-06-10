@@ -1,36 +1,27 @@
-import { IUser, Token } from "../models";
+import { handleUserErrors } from "../helper";
+import { IUser } from "../models";
 import {
   createUser,
-  getUserByEmail,
-  getUserByUsername,
+  getTokenById,
+  getUserById,
   getUserByUsernameOrEmail,
+  saveNewToken,
 } from "../repositories";
-
 import {
   ApiError,
   GeneratePassword,
   GenerateSalt,
-  GenerateAccessToken,
   STATUS_CODE,
   ValidatePassword,
   decodeToken,
   generateAccessAndRefereshTokens,
+  generateAndSaveTokens,
 } from "../utils";
 import { emailRegex } from "../validation";
 
-export const register = async (body: IUser) => {
-  const { identifier, password }: IUser = body;
-
+export const register = async ( {identifier, password }) => {
   const isEmail = emailRegex.test(identifier);
-
-  // Prepare user data based on whether the identifier is an email or a username
-  const data: any = {};
-
-  if (isEmail) {
-    data.email = identifier;
-  } else {
-    data.username = identifier;
-  }
+  const data: any = isEmail ? { email: identifier } : { username: identifier };  
 
   // Check if user already exists by email or username
   const existedUser = await getUserByUsernameOrEmail(identifier);
@@ -44,15 +35,11 @@ export const register = async (body: IUser) => {
   // Generate salt and hash the password
   const salt: string = await GenerateSalt();
   const userPassword: string = await GeneratePassword(password, salt);
-
-  // Prepare user data
   data.salt = salt;
   data.password = userPassword;
 
   // Create user in the database
   await createUser(data);
-
-  // Retrieve and return the newly created user
   const createdUser = await getUserByUsernameOrEmail(identifier);
 
   // Ensure user was created successfully
@@ -62,27 +49,19 @@ export const register = async (body: IUser) => {
       "User creation failed",
     );
   }
-  return createdUser;
+  console.log(createdUser,"createdUwser ")
+
+
+  const tokens = await generateAndSaveTokens(createdUser._id)
+
+  return {...createdUser.toJSON(),...tokens};
 };
 
-export const login = async (body: IUser) => {
-  const { identifier, password }: IUser = body;
 
-  // Check if not exists by email or username
+export const login = async ({ identifier, password }) => {
+
   const user = await getUserByUsernameOrEmail(identifier);
-  if (!user) {
-    throw new ApiError(
-      STATUS_CODE.CONFLICT,
-      "User with the provided email or username is not registered. Please register first.",
-    );
-  }
-
-  if (!user.isVerified) {
-    throw new ApiError(
-      STATUS_CODE.BAD_REQUEST,
-      "Your account has not been verified. Please check your email inbox and follow the instructions to verify your email address before proceeding.",
-    );
-  }
+   handleUserErrors(user)
 
   // Verify the provided password against the stored password
   const isPasswordMatch = await ValidatePassword(
@@ -98,22 +77,10 @@ export const login = async (body: IUser) => {
     );
   }
 
-  const payload = {
-    _id: user._id,
-    email: user.email,
-  };
+  const tokens = await generateAndSaveTokens(user._id);
 
-  // Call the GenerateAccessToken function with the payload
-  const signature = await GenerateAccessToken(payload);
-
-  const token = new Token({
-    userId: user._id,
-    accessToken: signature,
-  });
-
-  await token.save();
-
-  return token;
+  const userDetails = await getUserById(user._id);
+  return { ...userDetails.toObject(), ...tokens };
 };
 
 export const refreshAccessToken = async (incomingRefreshToken) => {
@@ -123,7 +90,7 @@ export const refreshAccessToken = async (incomingRefreshToken) => {
 
   const decodedToken = await decodeToken(incomingRefreshToken);
 
-  const userToken = await Token.findById({ userId: decodedToken?._id });
+  const userToken = await getTokenById(decodedToken?._id);
 
   if (!userToken) {
     throw new ApiError(STATUS_CODE.UNAUTHORIZED, "Invalid refresh token");
@@ -142,8 +109,43 @@ export const refreshAccessToken = async (incomingRefreshToken) => {
   };
 
   const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
-    userToken.userId,
+    userToken.userId
   );
 
   return { accessToken, refreshToken, options };
+};
+
+export const changePassword = async (userId, body) => {
+  
+  const user = await getUserById(userId);
+  //check user exist in db || isDeleted || isBlocked || isVerified   
+  handleUserErrors(user)
+
+  const { oldPassword, newPassword, confirmPassword } = body;
+
+  if (newPassword == confirmPassword) {
+    throw new ApiError(
+      STATUS_CODE.BAD_REQUEST,
+      "New password and old password is not matched! please try again",
+    );
+  }
+
+
+  const isValidPassword = await ValidatePassword(
+    oldPassword,
+    user.password,
+    user.salt,
+  );
+
+  if (!isValidPassword) {
+    throw new ApiError(
+      STATUS_CODE.BAD_REQUEST,
+      "Old Password is not valid password! Please enter valid password",
+    );
+  }
+
+
+
+
+
 };

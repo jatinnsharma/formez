@@ -1,5 +1,5 @@
 import { ObjectId } from "mongoose";
-import { User, IUser, UserDetail } from "../models";
+import { User, IUser } from "../models";
 
 // fetch data
 async function getUserByEmail(email: string): Promise<IUser | null> {
@@ -28,15 +28,10 @@ async function createUser(data: any) {
   await user.save();
 }
 
-async function getUserDetailsByUserId(id: ObjectId): Promise<IUser | null> {
-  return await UserDetail.findOne({ userId: id });
-}
-
 export {
   getUserByEmail,
   getUserByUsername,
   getUserByUsernameOrEmail,
   getUserById,
   createUser,
-  getUserDetailsByUserId,
 };

@@ -1,0 +1,18 @@
+
+vector<pair<char, int>> duplicate_char(string s, int n)
+{
+    unordered_map<char, int> count_dup;
+    for (int i = 0; i < n; i++)
+    {
+        count_dup[s[i]]++;
+    }
+
+    vector<pair<char,int>> dup_char;
+    for(auto $pair : count_dup){
+        if(pair.second>1){
+            dup_char.push_back(pair);
+        }
+    }
+
+    return dup_char;
+}

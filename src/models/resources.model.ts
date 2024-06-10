@@ -22,17 +22,21 @@ const CommentSchema: Schema = new Schema(
       required: true,
       ref: "User",
     },
-    postId: {
+    reciverId: {
       type: Schema.Types.ObjectId,
       ref: "Post",
     },
-    content: {
+    message: {
+      type: String,
+    },
+    attachment_url: {
       type: [String],
       default: [],
     },
-    upvotes: {
-      type: Number,
-      default: 0,
+    status: {
+      type: String,
+      // enums
+      // default: 0,
     },
     downvotes: {
       type: Number,

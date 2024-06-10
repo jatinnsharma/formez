@@ -8,7 +8,7 @@ export interface Community extends Document {
   members?: ObjectId[];
   profilePicture?: string;
   banner?: string;
-  rule?: string[];
+  rules?: string[];
   topics?: string[];
   resources?: string;
   isDeleted?: boolean;
@@ -16,7 +16,7 @@ export interface Community extends Document {
 
 const CommunitySchema: Schema = new Schema(
   {
-    userId: {
+    ownerId: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
@@ -45,6 +45,13 @@ const CommunitySchema: Schema = new Schema(
     topics: {
       type: [String],
       default: [],
+    },
+    resources: {
+      type: String,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {

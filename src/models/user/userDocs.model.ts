@@ -1,7 +1,7 @@
 // src/models/User.ts
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
 
-export interface IUserDoc extends Document {
+export interface IUserDocs extends Document {
   userId: ObjectId;
   aadharCardNumber?: number;
   panCardNumber?: string;
@@ -13,7 +13,7 @@ export interface IUserDoc extends Document {
   additionalEducationQualification?: string;
 }
 
-const UserDocSchema: Schema = new Schema(
+const UserDocsSchema: Schema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -61,5 +61,5 @@ const UserDocSchema: Schema = new Schema(
   },
 );
 
-const UserDoc = mongoose.model<IUserDoc>("UserDoc", UserDocSchema);
-export { UserDoc };
+const UserDocs = mongoose.model<IUserDocs>("UserDoc", UserDocsSchema);
+export { UserDocs };

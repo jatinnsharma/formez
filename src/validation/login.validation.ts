@@ -1,16 +1,16 @@
-import { registerValidation } from "./register.validation";
+import { registerValidationData } from "./register.validation";
 import { STATUS_CODE, ApiError } from "../utils";
 import { Request, Response, NextFunction } from "express";
 
-export const loginValidation = registerValidation;
+export const loginValidationData = registerValidationData;
 
 // Middleware function to validate login data
-export const validateLoginData = (
+export const loginValidation = (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const validationResult = loginValidation.safeParse(req.body);
+  const validationResult = loginValidationData.safeParse(req.body);
   if (!validationResult.success) {
     const firstError = validationResult.error.issues[0];
     const errorMessage = `${firstError.message}`;

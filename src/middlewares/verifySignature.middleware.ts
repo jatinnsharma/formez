@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../models";
 
-export const Authenticate = async (
+export const isAuthenticate = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -14,7 +14,10 @@ export const Authenticate = async (
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
-      throw new ApiError(STATUS_CODE.UNAUTHORIZED, "Unauthorized request");
+      throw new ApiError(
+        STATUS_CODE.UNAUTHORIZED,
+        "Unauthorized request: token is missing or not provided correctly.",
+      );
     }
 
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -28,7 +31,14 @@ export const Authenticate = async (
     req.user = user;
     next();
   } catch (error) {
-    console.log(error.message);
-    throw new ApiError(401, error?.message || "Invalid access token");
+    console.log(error.message, "error from here");
+    return res
+      .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+      .json(
+        new ApiResponse(
+          STATUS_CODE.INTERNAL_SERVER_ERROR,
+          error.message || "Internal server error",
+        ),
+      );
   }
 };

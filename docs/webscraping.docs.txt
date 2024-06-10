@@ -8,3 +8,10 @@ Scalable and efficient way to handle the web scraping
 4. Process Notifications
 5. Schedule and Execute
    Schedule the scraping job to run periodically (e.g., using node-cron)
+
+
+
+
+
+
+

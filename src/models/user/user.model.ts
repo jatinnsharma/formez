@@ -9,12 +9,12 @@ export interface IUser extends Document {
   password: string;
   salt: string;
   role: string;
+  isDeleted: boolean;
+  isBlocked: boolean;
   isVerified: boolean;
-  isDeleted?: boolean;
-  isBlocked?: boolean;
 }
 
-export type IUserOmit = Omit<IUser, "countryCode" | "phoneNumber">;
+// export type IUserOmit = Omit<IUser, "countryCode" | "phoneNumber">;
 
 const UserSchema: Schema = new Schema(
   {
@@ -23,7 +23,6 @@ const UserSchema: Schema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      index: true,
     },
     email: {
       type: String,
@@ -31,7 +30,6 @@ const UserSchema: Schema = new Schema(
       lowercase: true,
       trim: true,
     },
-
     password: {
       type: String,
       required: [true, "Password is required"],
@@ -44,6 +42,16 @@ const UserSchema: Schema = new Schema(
       type: String,
       enum: Object.values(UserRole),
       default: UserRole.User,
+    },
+    isDeleted: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    isBlocked: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     isVerified: {
       type: Boolean,

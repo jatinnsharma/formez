@@ -1,0 +1,23 @@
+
+
+NEW USER 
+==========
+
+1. user signup  
+User can signup with email/username/phoneNumber and password.
+
+2. user 
+then send verification code 
+    if user select phoneNumber then send code on number. 
+    if email then send code on email.
+    if user select username then show enter email address screen then send verification code on email.
+
+
+OLD USER 
+===========
+
+1.user login 
+    User can login with username/email/phoneNumber and password. 
+    When user login then send login notifications
+
+2.  

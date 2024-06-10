@@ -22,21 +22,24 @@ const CommentSchema: Schema = new Schema(
       required: true,
       ref: "User",
     },
-    postId: {
+    reciverId: {
       type: Schema.Types.ObjectId,
-      ref: "Post",
+      ref: "User",
     },
-    content: {
+    message: { type: String },
+    replyTo: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    attachment_url: {
       type: [String],
       default: [],
     },
-    upvotes: {
-      type: Number,
-      default: 0,
-    },
-    downvotes: {
-      type: Number,
-      default: 0,
+    isDeleted: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   {

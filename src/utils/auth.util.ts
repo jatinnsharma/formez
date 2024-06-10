@@ -4,6 +4,8 @@ import { envConfig } from "../config";
 import { ApiError } from "./ApiError";
 import { STATUS_CODE } from "./constants.util";
 import { Token, User } from "../models";
+import { ObjectId } from "mongoose";
+import { saveNewToken } from "../repositories";
 
 export const GenerateSalt = async () => {
   return await bcrypt.genSalt();
@@ -33,7 +35,7 @@ export const FormateData = (data: any) => {
   }
 };
 
-export const GenerateAccessToken = async (payload) => {
+export const GenerateAccessToken = async (payload: object) => {
   try {
     return await jwt.sign(payload, envConfig.ACCESS_TOKEN_SECRET, {
       expiresIn: envConfig.ACCESS_TOKEN_EXPIRY,
@@ -44,10 +46,10 @@ export const GenerateAccessToken = async (payload) => {
   }
 };
 
-const GenerateRefreshToken = async function (id) {
+const GenerateRefreshToken = async function (userId: string) {
   return jwt.sign(
     {
-      _id: id,
+      _id: userId,
     },
     process.env.REFRESH_TOKEN_SECRET,
     {
@@ -56,20 +58,15 @@ const GenerateRefreshToken = async function (id) {
   );
 };
 
-export const generateAccessAndRefereshTokens = async (userId) => {
+export const generateAccessAndRefereshTokens = async (userId: string) => {
   try {
-    const userToken = await Token.findById(userId).populate({
-      path: "userId",
-      model: "User",
-      select: "email",
+    const user = await User.findById(userId).lean();
+
+    const accessToken = await GenerateAccessToken({
+      userId: user._id,
+      role: user.role,
     });
-
-    const accessToken = await GenerateAccessToken(userToken.userId);
     const refreshToken = await GenerateRefreshToken(userId);
-
-    userToken.accessToken = accessToken;
-    userToken.refreshToken = refreshToken;
-    await userToken.save({ validateBeforeSave: false });
 
     return { accessToken, refreshToken };
   } catch (error) {
@@ -90,6 +87,12 @@ export const decodeToken = async (token) => {
   } catch (error) {
     throw new Error("Invalid token");
   }
+};
+
+export const generateAndSaveTokens = async (userId) => {
+  const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(userId);
+  await saveNewToken(userId, accessToken, refreshToken);
+  return { accessToken, refreshToken };
 };
 
 // export const ValidateSignature = async (req, _, next) => {
